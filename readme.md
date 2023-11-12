@@ -1,4 +1,5 @@
-
+**Vidéo de démonstration:**
+https://youtu.be/2h86bZ1cNlw
 # 0. Pré-requis 
 ## **Mise en place FQDN**
 **On accède au fichier hosts et on rajoute une ligne**
@@ -77,7 +78,7 @@ server {
 ```shell
 nginx -s reload
 ```
-**On viens créer un fichier html sur le path où notre nginx a été configuré**
+**On viens créer un fichier html sur le path où notre nginx a été configuré. Vous pourrez également rajouter votre gif anime préféré !**
 
 ```shell
 echo "<h1>Hello world!</h1>" > /var/www/localhost/htdocs/index.html;
@@ -104,25 +105,28 @@ openssl req -x509 -nodes -days 1000 -subj "/C=FR/ST=Drôme/O=ESGI, Inc./CN=guigu
 ```shell
 nano /etc/nginx/http.d/default.conf
 ```
-**Et on rajoute des lignes pour que le fichier ressemble à ceci:**
+**Et on remodifie le fichier conf pour installer les certificats + faire la redirection du http vers https:**
 ```conf
 server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
-        listen 443 ssl http2 default_server;
-        listen [::]:443 ssl http2 default_server;
-        ssl_certificate /etc/ssl/certs/guigui.com.crt;
-        ssl_certificate_key /etc/ssl/private/guigui.com.key;
-        # New root location
-        location / {
-                root /var/www/localhost/htdocs; 
-                # return 404;
-        }
-        # You may need this to prevent return 404 recursion.
-        location = /404.html {
-                internal;
-        }
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name guigui.com www.guigui.com;
+    return 301 https://$host$request_uri;
 }
+
+server {
+    listen 443 ssl http2 default_server;
+    listen [::]:443 ssl http2 default_server;
+
+    ssl_certificate /etc/ssl/certs/guigui.com.crt;
+    ssl_certificate_key /etc/ssl/private/guigui.com.key;
+
+    root /var/www/localhost/htdocs;
+    location / {
+        #directives supplémentaires
+    }
+}
+
 ```
 **On vérifie que le fichier est valide**
 ```shell

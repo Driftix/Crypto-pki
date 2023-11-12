@@ -19,7 +19,7 @@ RUN openssl req -x509 -nodes -days 365 -subj "/C=FR/ST=Drôme/O=ESGI, Inc./CN=gu
 COPY default.conf /etc/nginx/conf.d/default.conf
 
 # Create an HTML file
-RUN echo "<h1>Hello world!</h1>" > /var/www/localhost/htdocs/index.html
+RUN echo "<h1>Hello world!</h1> <p>Rajoutez votre gif par exemple</p>" > /var/www/localhost/htdocs/index.html
 
 # Expose ports
 EXPOSE 80
